@@ -381,6 +381,10 @@ class GreenLightModel:
             output_folder if output_folder else self.default_output_folder()
         )
 
+        # If the output folder does not exist, create it
+        if not os.path.exists(self.output_folder):
+            os.makedirs(folder_name)
+
         # Starts the MATLAB engine
         self.eng = matlab.engine.start_matlab()
 
@@ -511,6 +515,7 @@ class GreenLightModel:
 
         # Save the GreenLight model object and JSON string to files if specified
         if save_file:
+
             # Save the GreenLight model object to a .mat file
             self.eng.save(filename, nargout=0)
 
