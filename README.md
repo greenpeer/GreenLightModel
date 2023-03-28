@@ -5,6 +5,7 @@ The GreenLightModel class is a Python wrapper for the [GreenLight](https://githu
 ## Table of Contents
 
 - [Installation](#installation)
+- [Dependencies](#dependencies)
 - [Usage](#usage)
 - [Example](#example)
 - [Functions](#functions)
