@@ -211,11 +211,15 @@ The GreenLightModel class provides the following methods:
 
 #### `add_paths`
 
-Add required paths to MATLAB's search path.
+Add additional required paths to MATLAB's search path.
 
 ```python
 add_paths()
 ```
+
+##### Args
+
+- `*args`: A variable-length list of folder names to add to MATLAB's search path.
 
 ##### Returns
 
