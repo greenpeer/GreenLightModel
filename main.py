@@ -10,6 +10,7 @@ if __name__ == "__main__":
     model = GreenLightModel()
 
     p = {
+        # Parameters can be added here, more settings can be found in the GreenLight model attributes, using print_all_dicts() function.
         "psi": 22,  # Mean greenhouse cover slope
         "aFlr": 4e4,  # Floor area of greenhouse  [m^{2}]
         "aCov": 4.84e4,  # Surface of the cover including side walls [m^{2}]
