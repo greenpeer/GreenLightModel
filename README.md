@@ -41,7 +41,11 @@ There are two ways to install this application:
 Clone the repository and install the dependencies using `pip`.
 
 ```shell
+<<<<<<< HEAD
 $ git clone https://github.com/greenpeer/GreenLightModel
+=======
+$ git clone https://github.com/greenpeer/GreenLightModel.git
+>>>>>>> 011906900d5cefc64e28c0448adec8b1a7312c8f
 $ cd GreenLightModel
 $ pip install -r requirements.txt
 ```
