@@ -576,17 +576,27 @@ class GreenLightModel:
         Returns:
             The energy consumption in MJ.
         """
+        # Create a dictionary mapping second-level keys to top-level keys in gl
+        param_dicts = {
+            key2: key
+            for key, value in gl.items()
+            if (isinstance(value, dict) and key != "t")
+            for key2, value2 in value.items()
+        }
 
-        # Get the first array and extract the time sequence
-        array1 = np.array(gl["a"][array_keys[0]]["val"])
-        time_sequence = array1[:, 0]
-
-        # Initialize combined_array with the same shape as array1, filled with zeros
-        combined_array = np.zeros_like(array1)
+        # Initialize combined_array with None
+        combined_array = None
 
         # Iterate through the keys and add the corresponding arrays to the combined_array
-        for key in array_keys:
-            array_n = np.array(gl["a"][key]["val"])
+        for i, key in enumerate(array_keys):
+            attrib = param_dicts[key]
+            array_n = np.array(gl[attrib][key]["val"])
+            if i == 0:
+                # For the first array, extract the time sequence and initialize combined_array with zeros
+                time_sequence = array_n[:, 0]
+                combined_array = np.zeros_like(array_n)
+
+            # Add the current array to the combined_array
             combined_array += array_n
 
         # Calculate energy consumption using the trapezoidal rule, and convert the result to MJ

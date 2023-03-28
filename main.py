@@ -60,7 +60,6 @@ if __name__ == "__main__":
     # CO2 Use,co2inj,kg/m2
     co2inj = model.calculate_energy_consumption(gl, "mcExtAir")
 
-    # print(gl)
     print("--" * 40)
     print(f"Energy consumption of the lamps: {lampIn} MJ m^{-2}")
     print(f"Energy consumption of the boiler: {boilIn} MJ m^{-2}")
