@@ -48,7 +48,7 @@ $ pip install -r requirements.txt
 
 **Method 2:**
 
-To use the GreenLightModel class, you will need to have the [GreenLight](https://github.com/davkat1/GreenLight) and [DyMoMa](https://github.com/davkat1/DyMoMa/) models and [GreenLight_Extensions](#https://github.com/greenpeer/GreenLight_Extensions) downloaded on your local machine. Once you have downloaded this repository, you should put it in the same folder as the GreenLight and DyMoMa models.
+To use the GreenLightModel class, you will need to have the [GreenLight](https://github.com/davkat1/GreenLight) and [DyMoMa](https://github.com/davkat1/DyMoMa/) models and [GreenLight_Extensions](https://github.com/greenpeer/GreenLight_Extensions) downloaded on your local machine. Once you have downloaded this repository, you should put it in the same folder as the GreenLight and DyMoMa models.
 
 Here are the steps to get started:
 
