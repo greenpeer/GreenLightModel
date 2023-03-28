@@ -55,6 +55,7 @@ class GreenLightModel:
         """Initializes an instance of the GreenLightModel class with default or user-specified parameters."""
 
         self.p = {
+            # Parameters can be added here, more settings can be found in the GreenLight model attributes, using print_all_dicts() function.
             "psi": 22,  # Mean greenhouse cover slope
             "aFlr": 4e4,  # Floor area [m^{2}]
             "aCov": 4.84e4,  # Surface of the cover including side walls [m^{2}]
