@@ -158,7 +158,7 @@ if __name__ == "__main__":
     gl = model.run_green_light(
         filename="sample",  # add file name for saving file
         weatherInput="bei",  # Choose name of location, see folder inputs/energyPlus/data/
-        seasonLength=(1 / 24 / 6) * 1,  # season length in days
+        seasonLength=1 / 24 / 6,  # 5 minute intervals
         firstDay=1,  # Beginning of season (days since January 1)
         isMature=True,  # Start with a mature crop, use false to start with a small crop
         lampType="led",  # 'led', 'hps', or 'none'
