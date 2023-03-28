@@ -122,8 +122,7 @@ if __name__ == "__main__":
     model = GreenLightModel()
 
     p = {
-        # more setting parameters can be found in the GreenLightModel class attributes, using print_all_dicts() function
-        "psi": 42,  # Mean greenhouse cover slope
+        "psi": 22,  # Mean greenhouse cover slope
         "aFlr": 4e4,  # Floor area of greenhouse  [m^{2}]
         "aCov": 4.84e4,  # Surface of the cover including side walls [m^{2}]
         "hAir": 6.3,  # Height of the main compartment [m] (the ridge height is 6.5, screen is 20 cm below it)
@@ -135,16 +134,15 @@ if __name__ == "__main__":
         "phiExtCo2": 7.2e4
         * 4e4
         / 1.4e4,  # Capacity of CO2 injection for the entire greenhouse [mg s^{-1}], this is 185 kg/ha/hour, based on [1] and adjusted to 4 ha
-        "hElevation": 100,  #  Altitude of greenhouse m above sea level
         "co2SpDay": 1000,  # CO2 setpoint during the light period [ppm]
         "tSpNight": 18.5,  # temperature set point dark period [°C]
         "tSpDay": 19.5,  # temperature set point light period [°C]
-        "rhMax": 67,  # maximum relative humidity [ %]
+        "rhMax": 87,  # maximum relative humidity [ %]
         "ventHeatPband": 4,  # P-band for ventilation due to high temperature [°C]
         "ventRhPband": 50,  # P-band for ventilation due to high relative humidity [ % humidity]
         "thScrRhPband": 10,  # P-band for screen opening due to high relative humidity [ % humidity]
         "lampsOn": 0,  # time of day (in morning) to switch on lamps [h]
-        "lampsOff": 12,  # time of day (in evening) to switch off lamps 	[h]
+        "lampsOff": 18,  # time of day (in evening) to switch off lamps 	[h]
         "lampsOffSun": 400,  # lamps are switched off if global radiation is above this value [W m^{-2}]
         "lampRadSumLimit": 10,  # Predicted daily radiation sum from the sun where lamps are not used that day [MJ m^{-2} day^{-1}]
         "boiler": 300,  # big boiler, capacity of boiler [W]
@@ -158,11 +156,12 @@ if __name__ == "__main__":
     gl = model.run_green_light(
         filename="sample",  # add file name for saving file
         weatherInput="bei",  # Choose name of location, see folder inputs/energyPlus/data/
-        seasonLength=(1 / 24 / 6) * 1,  # season length in days
+        seasonLength=1/24/6,  # season length in 5 minute intervals
         firstDay=1,  # Beginning of season (days since January 1)
         isMature=True,  # Start with a mature crop, use false to start with a small crop
         lampType="led",  # 'led', 'hps', or 'none'
     )
+
 
     # Energy consumption of the lamps [MJ m^{-2}]
     lampIn = model.calculate_energy_consumption(gl, "qLampIn", "qIntLampIn")
@@ -251,7 +250,7 @@ gl = run_green_light(
     weatherInput="bei",
     seasonLength=1 / 24 / 6,
     firstDay=1,
-    isMature=True,
+    isMature=False,
     lampType="led",
 )
 ```
