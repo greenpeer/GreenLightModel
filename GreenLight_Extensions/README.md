@@ -29,7 +29,7 @@ json_str = glObjToJson(gl)
 The setParamVal function changes the value of a parameter in a DynamicModel object. `cFruit` is a parameter name used in gl objects. It is located under the gl object.x namespace.
 
 ```MATLAB
-setParamVal(gl, "cFruit", 2.8e5)
+setParamVal(gl, "x","cFruit", 2.8e5)
 ```
 
 ## Example
