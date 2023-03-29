@@ -497,10 +497,10 @@ class GreenLightModel:
 
         # Set initial state values if the crop is mature
         if isMature:
-            self.eng.setXParam(gl, "cFruit", 2.8e5, nargout=0)
-            self.eng.setXParam(gl, "cLeaf", 0.9e5, nargout=0)
-            self.eng.setXParam(gl, "cStem", 2.5e5, nargout=0)
-            self.eng.setXParam(gl, "tCanSum", 3000, nargout=0)
+            self.eng.setParamVal(gl, "x", "cFruit", 2.8e5, nargout=0)
+            self.eng.setParamVal(gl, "x", "cLeaf", 0.9e5, nargout=0)
+            self.eng.setParamVal(gl, "x", "cStem", 2.5e5, nargout=0)
+            self.eng.setParamVal(gl, "x", "tCanSum", 3000, nargout=0)
 
         # Set solver options with specified tolerances
         options = {"rtol": rel_tol, "atol": abs_tol}
