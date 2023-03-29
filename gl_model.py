@@ -440,8 +440,8 @@ class GreenLightModel:
 
         # Set default weather value to 5 if not provided
         if weather is None:
-            # Create artificial weather input with default value
-            weather = self.eng.makeArtificialInput(5, nargout=1)
+            # Create artificial weather input with default value,length of desired dataset (5 days)
+            weather = self.makeArtificialInput(5)
 
         # Set the lamp type to lowercase, default to "none" if not "hps" or "led"
         lamp_type = lampType.lower() if lampType else "none"
