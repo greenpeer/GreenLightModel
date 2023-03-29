@@ -319,7 +319,7 @@ energy_consumption = calculate_energy_consumption(gl, *array_keys)
 
 ##### Returns
 
-- `energy_consumption` (float): The energy consumption in MJ, or CO2 consumption in kg m^-2.
+- `energy_consumption` (float): The energy consumption in MJ m^{-2}, or CO2 consumption in kg m^-2.
 
 ---
 
