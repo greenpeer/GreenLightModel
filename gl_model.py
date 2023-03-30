@@ -505,8 +505,11 @@ class GreenLightModel:
         # Set solver options with specified tolerances
         options = {"rtol": rel_tol, "atol": abs_tol}
 
+        # Convert Python dictionary to MATLAB struct
+        options_struct = self.eng.struct(options)
+
         # Solve the GreenLight model using the ode15s solver
-        self.eng.solveFromFile(gl, "ode15s", options, nargout=0)
+        self.eng.solveFromFile(gl, "ode15s", options_struct, nargout=0)
 
         # Change the time resolution of the GreenLight model output to 300 seconds
         gl = self.eng.changeRes(gl, float(300), nargout=1)
