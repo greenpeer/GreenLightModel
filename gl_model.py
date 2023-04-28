@@ -32,7 +32,7 @@ class GreenLightModel:
     Methods:
         add_paths(): Adds required paths to MATLAB's search path.
         update_params(param_dict):Update the values of parameters in the given dictionary, overwriting the default values.
-        run_green_light(lamp_type=None, weather=None, filename=None, param_names=None, param_vals=None, is_mature=False): Runs the GreenLight model with the given parameters,returns an instance of the GreenLight model with the completed simulation. Data of this simulation is given in 5-minute intervals.
+        run_green_light(filename="",weatherInput="bei",seasonLength=1 / 24 / 6,firstDay=1,isMature=False,lampType="led",initial_gl=None,): Runs the GreenLight model with the given parameters,returns an instance of the GreenLight model with the completed simulation. Data of this simulation is given in 5-minute intervals.
         calculate_energy_consumption(gl, *array_keys): Calculate the energy consumption for the given parameters.
         quit(): Stop the MATLAB engine.
         makeArtificialInput: Make an artificial dataset to use as input for a GreenLight instance.
@@ -92,7 +92,7 @@ class GreenLightModel:
         weatherInput="bei",
         seasonLength=1 / 24 / 6,
         firstDay=1,
-        isMature=True,
+        isMature=False,
         lampType="led",
         initial_gl=None,
     ):
@@ -153,7 +153,7 @@ class GreenLightModel:
 
         # Create GreenLightModel object with specified parameters
         gl = self.eng.createGreenLightModel(lamp_type, weather, start_time)
-
+     
         # Set parameters for the GreenLight model
         self.eng.setParams4haWorldComparison(gl, nargout=0)
 
@@ -198,7 +198,7 @@ class GreenLightModel:
 
         # Load the JSON string into a Python dictionary
         gl_dict = json.loads(json_data)
-
+        
         # Return the GreenLight model output as a dictionary
         return gl_dict
 
@@ -218,9 +218,14 @@ class GreenLightModel:
                 for inner_key, inner_value in outer_value.items():
                     if not isinstance(inner_value, dict):
                         self.eng.setParam(gl, inner_key, inner_value, nargout=0)
+                    else:
+                       
+                        if inner_value["val"] is not None:
+                            self.eng.setParam(gl, inner_key, self.eng.double(inner_value["val"]), nargout=0)
+                        
             elif outer_key == "x":
                 for inner_key, inner_value in outer_value.items():
-                    #  setVal(gl.x.cFruit, 2.8e5);
+                  
                     if isinstance(inner_value, dict):
                         self.eng.setParamVal(
                             gl,
