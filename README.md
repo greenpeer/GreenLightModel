@@ -156,7 +156,7 @@ if __name__ == "__main__":
         co2inj = model.calculate_energy_consumption(gl, "mcExtAir")
         total_co2inj += co2inj
 
-    # Stop the MATLAB engine
+    # Close the model
     model.quit()
 
     print("--" * 40)
