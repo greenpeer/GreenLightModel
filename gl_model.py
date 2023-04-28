@@ -62,7 +62,7 @@ class GreenLightModel:
 
         # If the output folder does not exist, create it
         if not os.path.exists(self.output_folder):
-            os.makedirs("folder_name")
+            os.makedirs(self.output_folder)
 
         # Starts the MATLAB engine
         self.eng = matlab.engine.start_matlab()
@@ -130,10 +130,10 @@ class GreenLightModel:
         # Print current date and time
         print(datetime.datetime.now())
 
-        # Print starting information for the run_green_light method
-        print(
-            f"starting run_green_light. Lamp type: {lamp_type}. Filename: {filename}.json"
-        )
+        # # Print starting information for the run_green_light method
+        # print(
+        #     f"starting run_green_light. Lamp type: {lamp_type}. Filename: {filename}.json"
+        # )
 
         # Get weather datenum
         weather_datenum = weather[0, 0]
