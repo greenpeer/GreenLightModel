@@ -25,9 +25,7 @@ The GreenLightModel class is a Python wrapper for the [GreenLight](https://githu
     - [default_output_folder](#default_output_folder)
     - [data_folder](#data_folder)
     - [save_to_json](#save_to_json)
-    - [find_comment](#find_comment)
-    - [get_all_dicts](#get_all_dicts)
-    - [print_all_dicts](#print_all_dicts)
+    - [find_comment](#find_comment)  
     - [help](#help)
 - [Attributes](#Attributes)
 - [References](#references)
@@ -93,16 +91,17 @@ Create an instance of the GreenLightModel class:
 ```python
 # Instantiate the GreenLightModel with custom parameter values (optional)
 model = GreenLightModel()
-
 # Run the model
-gl = model.run_green_light(
-        filename="sample",  # add file name for saving file
-        weatherInput="bei",  # Choose name of location, see folder inputs/energyPlus/data/
-        seasonLength=(1 / 24 / 6) * 1,  # season length in days
-        firstDay=1,  # Beginning of season (days since January 1)
-        isMature=True,  # Start with a mature crop, use false to start with a small crop
-        lampType="led",  # 'led', 'hps', or 'none'
-    )
+      gl = model.run_green_light(
+          filename="sample",  # add file name for saving file
+          weatherInput="bei",  # Choose name of location, see folder inputs/energyPlus/data/
+          seasonLength=1 / 24 / 6,  # season length in 5 minute intervals
+          firstDay=1,  # Beginning of season (days since January 1)
+          isMature=False,  # Start with a mature crop, use false to start with a small crop
+          lampType="led",  # 'led', 'hps', or 'none'
+          initial_gl=gl,
+      )
+
 ```
 
 You can now use the various methods provided by the GreenLightModel class.
@@ -110,7 +109,6 @@ You can now use the various methods provided by the GreenLightModel class.
 ## Example
 
 ```python
-import numpy as np
 import time
 from gl_model import GreenLightModel
 
@@ -121,77 +119,55 @@ if __name__ == "__main__":
     # Instantiate the GreenLightModel with custom parameter values (optional)
     model = GreenLightModel()
 
-    p = {
-       # Parameters can be added here, more settings can be found in the GreenLight model attributes, using print_all_dicts() function.
-        "psi": 22,  # Mean greenhouse cover slope
-        "aFlr": 4e4,  # Floor area of greenhouse  [m^{2}]
-        "aCov": 4.84e4,  # Surface of the cover including side walls [m^{2}]
-        "hAir": 6.3,  # Height of the main compartment [m] (the ridge height is 6.5, screen is 20 cm below it)
-        "hGh": 6.905,  # Average height of the greenhouse [m],Each triangle in the greenhouse roof has width 4m, angle 22°, so height of 0.81m. The ridge is 6.5 m high
-        "aRoof": 0.1169 * 4e4,  # Maximum roof ventilation area
-        "hVent": 1.3,  # Vertical dimension of single ventilation opening [m]
-        "cDgh": 0.75,  # Ventilation discharge coefficient [-]
-        "lPipe": 1.25,  # Length of heating pipes per gh floor area [m m^{-2}]
-        "phiExtCo2": 7.2e4
-        * 4e4
-        / 1.4e4,  # Capacity of CO2 injection for the entire greenhouse [mg s^{-1}], this is 185 kg/ha/hour, based on [1] and adjusted to 4 ha
-        "co2SpDay": 1000,  # CO2 setpoint during the light period [ppm]
-        "tSpNight": 18.5,  # temperature set point dark period [°C]
-        "tSpDay": 19.5,  # temperature set point light period [°C]
-        "rhMax": 87,  # maximum relative humidity [ %]
-        "ventHeatPband": 4,  # P-band for ventilation due to high temperature [°C]
-        "ventRhPband": 50,  # P-band for ventilation due to high relative humidity [ % humidity]
-        "thScrRhPband": 10,  # P-band for screen opening due to high relative humidity [ % humidity]
-        "lampsOn": 0,  # time of day (in morning) to switch on lamps [h]
-        "lampsOff": 18,  # time of day (in evening) to switch off lamps 	[h]
-        "lampsOffSun": 400,  # lamps are switched off if global radiation is above this value [W m^{-2}]
-        "lampRadSumLimit": 10,  # Predicted daily radiation sum from the sun where lamps are not used that day [MJ m^{-2} day^{-1}]
-        "boiler": 300,  # big boiler, capacity of boiler [W]
-        "pBoil": "boiler * aFlr",  # Capacity of boiler for the entire greenhouse [W]
+    # Set Innitial values
+    gl = {
+        "p": {
+            "tSpNight": 28.5,  # temperature set point dark period [°C]
+            "tSpDay": 29.5,  # temperature set point light period [°C]
+        },
     }
 
-    # update the parameters
-    model.p.update(p)
+    total_lampIn = 0
+    total_boilIn = 0
+    total_co2inj = 0
 
-    # Run the model
-    gl = model.run_green_light(
-        filename="sample",  # add file name for saving file
-        weatherInput="bei",  # Choose name of location, see folder inputs/energyPlus/data/
-        seasonLength=1/24/6,  # season length in 5 minute intervals
-        firstDay=1,  # Beginning of season (days since January 1)
-        isMature=False,  # Start with a mature crop, use false to start with a small crop
-        lampType="led",  # 'led', 'hps', or 'none'
-    )
+    # Set a iteration loop for 1-h demo , run 12 times, each time is 5 minutes interval, you can remove it
+    for i in range(11):
+        # Run the model
+        gl = model.run_green_light(
+            filename="sample",  # add file name for saving file
+            weatherInput="bei",  # Choose name of location, see folder inputs/energyPlus/data/
+            seasonLength=1 / 24 / 6,  # season length in 5 minute intervals
+            firstDay=1,  # Beginning of season (days since January 1)
+            isMature=False,  # Start with a mature crop, use false to start with a small crop
+            lampType="led",  # 'led', 'hps', or 'none'
+            initial_gl=gl,
+        )
 
+        # Energy consumption of the lamps [MJ m^{-2}]
+        lampIn = model.calculate_energy_consumption(gl, "qLampIn", "qIntLampIn")
+        total_lampIn += lampIn
 
-    # Energy consumption of the lamps [MJ m^{-2}]
-    lampIn = model.calculate_energy_consumption(gl, "qLampIn", "qIntLampIn")
+        # Energy consumption of the boiler, boilIn [MJ m^{-2}]
+        boilIn = model.calculate_energy_consumption(gl, "hBoilPipe", "hBoilGroPipe")
+        total_boilIn += boilIn
 
-    # Energy consumption of the boiler, boilIn [MJ m^{-2}]
-    boilIn = model.calculate_energy_consumption(gl, "hBoilPipe", "hBoilGroPipe")
-
-    # CO2 Use,co2inj,kg/m2
-    co2inj = model.calculate_energy_consumption(gl, "mcExtAir")
-
-    # print(gl)
-    print("--" * 40)
-    print(f"Energy consumption of the lamps: {lampIn} MJ m^{-2}")
-    print(f"Energy consumption of the boiler: {boilIn} MJ m^{-2}")
-    print(f"CO2 Use: {co2inj} kg m^{-2}")
-    print("--" * 40)
+        # CO2 Use,co2inj,kg/m2
+        co2inj = model.calculate_energy_consumption(gl, "mcExtAir")
+        total_co2inj += co2inj
 
     # Stop the MATLAB engine
     model.quit()
 
+    print("--" * 40)
+    print(f"Energy consumption of the lamps in 1 hour: {total_lampIn} MJ m^{-2}")
+    print(f"Energy consumption of the boiler in 1 hour: {total_boilIn} MJ m^{-2}")
+    print(f"CO2 Use in 1 hour: {total_co2inj} kg m^{-2}")
+    print("--" * 40)
+
     end_time = time.time()
 
     print("Time taken: {:.2f} seconds".format(end_time - start_time))
-
-    # Get all setting parameters for the model
-    # model.print_all_dicts()
-
-    # Get help message for the calculate_energy_consumption function
-    # model.help("calculate_energy_consumption")
 
 ```
 
@@ -348,7 +324,6 @@ quit()
 - [`default_output_folder()`](#default_output_folder): Returns the default output folder path for the GreenLight model.
 - [`data_folder()`](#data_folder): Returns the data folder path for the GreenLight model.
 - [`save_to_json(json_data, filename=None)`](#save_to_json): Saves the data to a JSON file.
-- [`print_all_dicts()`](#print_all_dicts): Prints all parameters in the dictionaries along with their keys, values, and comments.
 - [`find_comment(var_name)`](#find_comment): Finds and returns the comment associated with a variable in the source code.
 - [`help()`](#help): Prints the help text (docstring) describing the class and its dictionaries.
 
@@ -542,31 +517,9 @@ comment = find_comment(var_name)
 
 - `comment` (str): The comment associated with the given variable name.
 
----
-
-#### `get_all_dicts`
-
-Get all dictionaries stored in the class.
-
-```python
-all_dicts = get_all_dicts()
-```
-
-##### Returns
-
-- `all_dicts` (dict): A dictionary containing all dictionaries stored in the class.
 
 ---
 
-#### `print_all_dicts`
-
-Print all dictionaries stored in the class.
-
-Prints the names, keys, values, and comments (if any) of all dictionaries stored in the class.
-
-```python
-print_all_dicts()
-```
 
 ##### Returns
 
@@ -594,26 +547,6 @@ help(function_name)
 
 ## Attributes
 
-- `p`: A dictionary containing various parameters related to greenhouse systems.
-- `general_parameters`: A dictionary containing various parameters related to greenhouse systems.
-- `control_parameters`: A dictionary containing various parameters related to greenhouse control systems.
-- `growpipe_parameters`: A dictionary containing various parameters related to greenhouse growpipe systems.
-- `construction_parameters`: A dictionary containing various parameters related to greenhouse construction properties.
-- `ventilation_parameters`: A dictionary containing various parameters related to greenhouse ventilation.
-- `roof_parameters`: A dictionary containing various parameters related to greenhouse roof.
-- `whitewash_parameters`: A dictionary containing various parameters related to greenhouse whitewash.
-- `shadow_screen_parameters`: A dictionary containing various parameters related to greenhouse shadow screen.
-- `thermal_screen_parameters`: A dictionary containing various parameters related to greenhouse thermal screen.
-- `blackout_screen_parameters`: A dictionary containing various parameters related to greenhouse blackout screen.
-- `floor_parameters`: A dictionary containing various parameters related to greenhouse floor.
-- `soil_parameters`: A dictionary containing various parameters related to greenhouse soil.
-- `heating_system_parameters`: A dictionary containing various parameters related to greenhouse heating system.
-- `active_climate_control_parameters`: A dictionary containing various parameters related to greenhouse active climate control.
-- `dependant_parameters`: A dictionary containingOther parameters that depend on previously defined parameters.
-- `canopy_photosynthesis_parameters`: A dictionary containing various parameters related to greenhouse canopy photosynthesis.
-- `carbohydrates_buffer_parameters`: A dictionary containing various parameters related to greenhouse carbohydrates buffer.
-- `crop_development_parameters`: A dictionary containing various parameters related to greenhouse crop development.
-- `other_parameters`: A dictionary containing various other parameters.
 - `current_folder` : The folder containing the class source file.
 - `output_folder`: The folder where the output files will be saved.
 
