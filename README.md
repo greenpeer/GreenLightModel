@@ -174,9 +174,9 @@ if __name__ == "__main__":
 The output of the above code is:
 
 ```bash
-Energy consumption of the lamps: 0.02 MJ m^-2
-Energy consumption of the boiler: 0.08999903737582271 MJ m^-2
-CO2 Use: 0.0015428571428571423 kg m^-2
+Energy consumption of the lamps in 1 hour: 0.21999999999999997 MJ m^-2
+Energy consumption of the boiler in 1 hour: 0.9899917224945389 MJ m^-2
+CO2 Use in 1 hour: 0.006845308136989725 kg m^-2
 ```
 
 ---
